@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MV Gaming Cricket</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#060a12;color:#fff}
+header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;background:#0d1422;border-bottom:1px solid #263149;position:sticky;top:0;z-index:5}
+.logo{font-size:24px;font-weight:900}.logo b{color:#00e5ff}.coins{background:#151f32;padding:9px 14px;border-radius:20px;color:#ffd84d;font-weight:800}
+.hero{text-align:center;padding:35px 18px;background:radial-gradient(circle at 50% 20%,#123d4b,transparent 55%)}
+.hero h1{font-size:48px;margin:5px}.hero h1 span{color:#00e5ff}.hero p{color:#aeb8c9}
+.card{max-width:620px;margin:18px auto;background:#0e1625;border:1px solid #27334b;border-radius:20px;padding:22px}
+.stadium{height:180px;border-radius:16px;background:linear-gradient(#102d24 0 55%,#17733c 55%);position:relative;overflow:hidden}
+.pitch{position:absolute;left:34%;right:34%;top:22px;bottom:0;background:#c9a76a;border-radius:8px}
+.player{position:absolute;bottom:24px;font-size:42px;animation:bounce 1s infinite alternate}
+.batman{left:43%}.bowler{left:8%;bottom:105px;font-size:35px}
+.ball{position:absolute;font-size:24px;left:48%;top:55px;display:none}
+@keyframes bounce{to{transform:translateY(-7px)}}@keyframes hit{0%{left:48%;top:55px}100%{left:82%;top:25px}}
+.score{display:flex;justify-content:space-around;text-align:center;margin:18px 0}.score strong{font-size:28px;color:#00e5ff}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:800;cursor:pointer}
+.bat{background:#00e5ff;color:#041017}.bowl{background:#ffcc33;color:#171000}
+.reset{width:100%;margin-top:12px;background:#202b40;color:#fff}
+.msg{text-align:center;min-height:26px;color:#b9c4d5;margin:12px}
+.leader{max-width:620px;margin:18px auto;padding:0 18px 40px}.row{display:flex;justify-content:space-between;background:#0e1625;padding:13px 15px;border-radius:10px;margin:8px 0;border:1px solid #27334b}
+.note{text-align:center;color:#7f8b9f;font-size:12px;padding:15px}
+@media(max-width:500px){.hero h1{font-size:38px}.stadium{height:155px}}
+</style>
+</head>
+<body>
+<header><div class="logo">MV <b>GAMING</b></div><div class="coins">🪙 <span id="coins">100</span></div></header>
+
+<section class="hero">
+<h1>🏏 MV <span>CRICKET</span></h1>
+<p>Play cricket, score runs and collect virtual coins!</p>
+</section>
+
+<div class="card">
+<div class="stadium">
+<div class="pitch"></div><div class="player batman">🏏</div><div class="player bowler">🧑‍🦱</div><div id="ball" class="ball">🔴</div>
+</div>
+<div class="score"><div>RUNS<br><strong id="runs">0</strong></div><div>WICKETS<br><strong id="wickets">0</strong></div><div>BALLS<br><strong id="balls">0</strong></div></div>
+<div class="msg" id="msg">Choose Bat or Bowl to start!</div>
+<div class="buttons"><button class="bat" onclick="bat()">🏏 BAT</button><button class="bowl" onclick="bowl()">🎯 BOWL</button></div>
+<button class="reset" onclick="resetGame()">🔄 New Match</button>
+</div>
+
+<section class="leader">
+<h2>🏆 Leaderboard</h2>
+<div class="row"><span>🥇 Player One</span><b>980</b></div>
+<div class="row"><span>🥈 Player Two</span><b>850</b></div>
+<div class="row"><span>🥉 Player Three</span><b>720</b></div>
+<div class="row"><span>🎮 You</span><b id="yourScore">0</b></div>
+</section>
+
+<div class="note">Virtual coins only. No real-money prizes, betting or cash-out.</div>
+
+<script>
+let runs=0,wickets=0,balls=0,coins=100;
+const $=id=>document.getElementById(id);
+function update(){ $('runs').textContent=runs;$('wickets').textContent=wickets;$('balls').textContent=balls;$('coins').textContent=coins;$('yourScore').textContent=runs*10; }
+function animateBall(){let b=$('ball');b.style.display='block';b.style.animation='none';void b.offsetWidth;b.style.animation='hit .45s linear';setTimeout(()=>b.style.display='none',500)}
+function bat(){
+ if(balls>=12||wickets>=3){$('msg').textContent='🏁 Match finished! Start a new match.';return}
+ balls++;animateBall();
+ let r=[0,1,2,3,4,6,'W'][Math.floor(Math.random()*7)];
+ if(r==='W'){wickets++;coins=Math.max(0,coins-5);$('msg').textContent='😮 OUT! -5 virtual coins';}
+ else{runs+=r;coins+=r*2;$('msg').textContent=r===6?'🚀 SIX! +12 coins':`🏏 ${r} run${r==1?'':'s'}! +${r*2} coins`;}
+ update();
+}
+function bowl(){
+ if(balls>=12||wickets>=3){$('msg').textContent='🏁 Match finished! Start a new match.';return}
+ balls++;let r=[0,1,2,3,4,6,'W'][Math.floor(Math.random()*7)];
+ if(r==='W'){wickets++;coins+=10;$('msg').textContent='🎯 WICKET! +10 virtual coins';}
+ else{$('msg').textContent=`🏃 Opponent scored ${r} run${r==1?'':'s'}.`;}
+ update();
+}
+function resetGame(){runs=0;wickets=0;balls=0;coins=100;$('msg').textContent='New match started!';update()}
+update();
+</script>
+</body>
+</html>
